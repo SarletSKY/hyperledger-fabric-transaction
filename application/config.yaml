@@ -1,0 +1,357 @@
+version: 1.0.0
+
+client:
+
+  # Which organization does this application instance belong to? The value must be the name of an org
+  # defined under "organizations"
+  # 这个应用程序是属于哪个组织的，这里就填那个组织的组织名
+  organization: org1
+
+  # 日志登记
+  logging:
+    level: info
+
+  # Global configuration for peer, event service and orderer timeouts
+  # if this this section is omitted, then default values will be used (same values as below)
+#  peer:
+#    timeout:
+#      connection: 10s
+#      response: 180s
+#      discovery:
+#        # Expiry period for discovery service greylist filter
+#        # The channel client will greylist peers that are found to be offline
+#        # to prevent re-selecting them in subsequent retries.
+#        # This interval will define how long a peer is greylisted
+#        greylistExpiry: 10s
+  # eventService:
+    # Event service type (optional). If not specified then the type is automatically
+    # determined from channel capabilities.
+    # type: eventhub
+    # the below timeouts are commented out to use the default values that are found in
+    # "pkg/fab/endpointconfig.go"
+    # the client is free to override the default values by uncommenting and resetting
+    # the values as they see fit in their config file
+#    timeout:
+#      connection: 15s
+#      registrationResponse: 15s
+#  orderer:
+#    timeout:
+#      connection: 15s
+#      response: 15s
+#  global:
+#    timeout:
+#      query: 180s
+#      execute: 180s
+#      resmgmt: 180s
+#    cache:
+#      connectionIdle: 30s
+#      eventServiceIdle: 2m
+#      channelConfig: 30m
+#      channelMembership: 30s
+#      discovery: 10s
+#      selection: 10m
+
+  # Root of the MSP directories with keys and certs.
+  # MSP证书的根路径
+  cryptoconfig:
+    path: /home/zwx/比赛/go/src/accurchain.com/perishable-food/deploy/crypto-config
+
+  # Some SDKs support pluggable KV stores, the properties under "credentialStore"
+  # are implementation specific
+  # 默认即可，一下都是可选（optional）的配置
+  credentialStore:
+    # [Optional]. Used by user store. Not needed if all credentials are embedded in configuration
+    # and enrollments are performed elswhere.
+    path: "/tmp/state-store"
+
+    # [Optional]. Specific to the CryptoSuite implementation used by GO SDK. Software-based implementations
+    # requiring a key store. PKCS#11 based implementations does not.
+    cryptoStore:
+      # Specific to the underlying KeyValueStore that backs the crypto key store.
+      path: /tmp/msp
+
+   # BCCSP config for the client. Used by GO SDK.
+  # 这里配置的是加密组件的一些属性，默认即可
+  BCCSP:
+    security:
+     enabled: true
+     default:
+      provider: "SW"
+     hashAlgorithm: "SHA2"
+     softVerify: true
+     level: 256
+
+    tlsCerts:
+      systemCertPool: true
+      client:
+        key:
+          path: /home/zwx/比赛/go/src/accurchain.com/perishable-food/deploy/crypto-config/ordererOrganizations/gdzc.com/tlsca/631db84838969a7dff6efb9d8e854cab77112a5c635b50eb78fb89481865ee9f_sk
+        cert:
+          path: /home/zwx/比赛/go/src/accurchain.com/perishable-food/deploy/crypto-config/ordererOrganizations/gdzc.com/tlsca/tlsca.gdzc.com-cert.pem
+
+#
+# [Optional]. But most apps would have this section so that channel objects can be constructed
+# based on the content below. If an app is creating channels, then it likely will not need this
+# section.
+#
+# 通道相关配置
+channels:
+  # name of the channel
+  # 通道的名称
+  transaction:
+    # Required. list of orderers designated by the application to use for transactions on this
+    # channel. This list can be a result of access control ("org1" can only access "ordererA"), or
+    # operational decisions to share loads from applications among the orderers.  The values must
+    # be "names" of orgs defined under "organizations/peers"
+    # deprecated: not recommended, to override any orderer configuration items, entity matchers should be used.
+    # 【必须】orderer的配置，填orderer的域名
+    orderers:
+      - center.gdzc.com
+
+    # Required. list of peers from participating orgs
+    # 【必须】节点配置
+    peers:
+      # 填写这个应用程序所属组织的Peer的域名
+      hello.node1.gdzc.com:
+        # [Optional]. will this peer be sent transaction proposals for endorsement? The peer must
+        # have the chaincode installed. The app can also use this property to decide which peers
+        # to send the chaincode install request. Default: true
+        endorsingPeer: true
+
+        # [Optional]. will this peer be sent query proposals? The peer must have the chaincode
+        # installed. The app can also use this property to decide which peers to send the
+        # chaincode install request. Default: true
+        chaincodeQuery: true
+
+        # [Optional]. will this peer be sent query proposals that do not require chaincodes, like
+        # queryBlock(), queryTransaction(), etc. Default: true
+        ledgerQuery: true
+
+        # [Optional]. will this peer be the target of the SDK's listener registration? All peers can
+        # produce events but the app typically only needs to connect to one to listen to events.
+        # Default: true
+        eventSource: true
+
+      word.node1.gdzc.com:
+        # [Optional]. will this peer be sent transaction proposals for endorsement? The peer must
+        # have the chaincode installed. The app can also use this property to decide which peers
+        # to send the chaincode install request. Default: true
+        endorsingPeer: true
+
+        # [Optional]. will this peer be sent query proposals? The peer must have the chaincode
+        # installed. The app can also use this property to decide which peers to send the
+        # chaincode install request. Default: true
+        chaincodeQuery: true
+
+        # [Optional]. will this peer be sent query proposals that do not require chaincodes, like
+        # queryBlock(), queryTransaction(), etc. Default: true
+        ledgerQuery: true
+
+        # [Optional]. will this peer be the target of the SDK's listener registration? All peers can
+        # produce events but the app typically only needs to connect to one to listen to events.
+        # Default: true
+        eventSource: true
+
+    # [Optional]. The application can use these options to perform channel operations like retrieving channel
+    # config etc.
+    # 【可选】策略配置
+    policies:
+      #[Optional] options for retrieving channel configuration blocks
+      queryChannelConfig:
+        #[Optional] min number of success responses (from targets/peers)
+        minResponses: 1
+        #[Optional] channel config will be retrieved for these number of random targets
+        maxTargets: 1
+        #[Optional] retry options for query config block
+        retryOpts:
+          #[Optional] number of retry attempts
+          attempts: 5
+          #[Optional] the back off interval for the first retry attempt
+          initialBackoff: 500ms
+          #[Optional] the maximum back off interval for any retry attempt
+          maxBackoff: 5s
+          #[Optional] he factor by which the initial back off period is exponentially incremented
+          backoffFactor: 2.0
+
+
+#
+# list of participating organizations in this network
+#
+# 组织配置，列举了参与该网络的所有组织
+organizations:
+  # 组织的名称
+  org1:
+    # 该组织的MSPID
+    mspid: Org1MSP
+
+    # This org's MSP store (absolute path or relative to client.cryptoconfig)
+    # 这个组织的MSP证书路径
+    cryptoPath:  peerOrganizations/node1.gdzc.com/users/Admin@node1.gdzc.com/msp
+
+    # 这个组织下属的节点
+    peers:
+      - hello.node1.gdzc.com
+      - word.node1.gdzc.com
+
+    # [Optional]. Certificate Authorities issue certificates for identification purposes in a Fabric based
+    # network. Typically certificates provisioning is done in a separate process outside of the
+    # runtime network. Fabric-CA is a special certificate authority that provides a REST APIs for
+    # dynamic certificate management (enroll, revoke, re-enroll). The following section is only for
+    # Fabric-CA servers.
+    certificateAuthorities:
+      #- ca.org1.example.com
+
+  # Orderer Org name
+  # orderer组织
+  ordererorg:
+      # Membership Service Provider ID for this organization
+      # orderer组织的MSPID
+      mspID: "OrdererMSP"
+
+      # Needed to load users crypto keys and certs for this org (absolute path or relative to global crypto path, DEV mode)
+      # orderer组织的MSP证书路径
+      cryptoPath: ordererOrganizations/gdzc.com/users/Admin@gdzc.com/msp
+
+
+#
+# List of orderers to send transaction and channel create/update requests to. For the time
+# being only one orderer is needed. If more than one is defined, which one get used by the
+# SDK is implementation specific. Consult each SDK's documentation for its handling of orderers.
+#
+# 指定orderer
+orderers:
+  center.gdzc.com:
+    url: 127.0.0.1:7050
+
+    # these are standard properties defined by the gRPC library
+    # they will be passed in as-is to gRPC client constructor
+    # grpc配置
+    grpcOptions:
+      ssl-target-name-override: center.gdzc.com
+      # These parameters should be set in coordination with the keepalive policy on the server,
+      # as incompatible settings can result in closing of connection.
+      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
+      allow-insecure: false # 非tls连接
+
+    tlsCACerts:
+      # Certificate location absolute path
+      path: /home/zwx/比赛/go/src/accurchain.com/perishable-food/deploy/crypto-config/ordererOrganizations/gdzc.com/tlsca/tlsca.gdzc.com-cert.pem
+
+#
+# List of peers to send various requests to, including endorsement, query
+# and event listener registration.
+#
+# 指定peer
+peers:
+  word.node1.gdzc.com:
+    # this URL is used to send endorsement and query requests
+    url: 127.0.0.1:8051
+    # eventUrl is only needed when using eventhub (default is delivery service)
+    eventUrl: 127.0.0.1:8053
+
+    # grpc配置
+    grpcOptions:
+      ssl-target-name-override: word.node1.gdzc.com
+      # These parameters should be set in coordination with the keepalive policy on the server,
+      # as incompatible settings can result in closing of connection.
+      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
+      allow-insecure: false
+
+    tlsCACerts:
+      # Certificate location absolute path
+      path: /home/zwx/比赛/go/src/accurchain.com/perishable-food/deploy/crypto-config/peerOrganizations/node1.gdzc.com/tlsca/tlsca.node1.gdzc.com-cert.pem
+
+  weixiong.node2.gdzc.com:
+    # this URL is used to send endorsement and query requests
+    url: 127.0.0.1:10051
+    # eventUrl is only needed when using eventhub (default is delivery service)
+    eventUrl: 127.0.0.1:10053
+
+    # grpc配置
+    grpcOptions:
+      ssl-target-name-override: weixiong.node2.gdzc.com
+      # These parameters should be set in coordination with the keepalive policy on the server,
+      # as incompatible settings can result in closing of connection.
+      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
+      allow-insecure: false
+
+    tlsCACerts:
+      # Certificate location absolute path
+      path: /home/zwx/比赛/go/src/accurchain.com/perishable-food/deploy/crypto-config/peerOrganizations/node2.gdzc.com/tlsca/tlsca.node2.gdzc.com-cert.pem
+
+  peer1.node3.gdzc.com:
+    # this URL is used to send endorsement and query requests
+    url: 127.0.0.1:12051
+    # eventUrl is only needed when using eventhub (default is delivery service)
+    eventUrl: 127.0.0.1:12053
+
+    # grpc配置
+    grpcOptions:
+      ssl-target-name-override: peer1.node3.gdzc.com
+      # These parameters should be set in coordination with the keepalive policy on the server,
+      # as incompatible settings can result in closing of connection.
+      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
+      allow-insecure: false
+
+    tlsCACerts:
+      # Certificate location absolute path
+      path: /home/zwx/比赛/go/src/accurchain.com/perishable-food/deploy/crypto-config/peerOrganizations/node3.gdzc.com/tlsca/tlsca.node3.gdzc.com-cert.pem
+
+entityMatchers:
+  peer:
+    - pattern: (\w*)hello.node1.gdzc.com(\w*)
+      urlSubstitutionExp: 127.0.0.1:7051
+      sslTargetOverrideUrlSubstitutionExp: hello.node1.gdzc.com
+      mappedHost: hello.node1.gdzc.com
+
+    - pattern: (\w*)word.node1.gdzc.com(\w*)
+      urlSubstitutionExp: 127.0.0.1:8051
+      sslTargetOverrideUrlSubstitutionExp: word.node1.gdzc.com
+      mappedHost: word.node1.gdzc.com
+
+    - pattern: (\w*)zhao.node2.gdzc.com(\w*)
+      urlSubstitutionExp: 127.0.0.1:9051
+      sslTargetOverrideUrlSubstitutionExp: zhao.node2.gdzc.com
+      mappedHost: zhao.node2.gdzc.com
+
+    - pattern: (\w*)weixiong.node2.gdzc.com(\w*)
+      urlSubstitutionExp: 127.0.0.1:10051
+      sslTargetOverrideUrlSubstitutionExp: weixiong.node2.gdzc.com
+      mappedHost: weixiong.node2.gdzc.com
+
+    - pattern: (\w*)peer0.node3.gdzc.com(\w*)
+      urlSubstitutionExp: 127.0.0.1:11051
+      sslTargetOverrideUrlSubstitutionExp: peer0.node3.gdzc.com
+      mappedHost: peer0.node3.gdzc.com
+
+    - pattern: (\w*)peer1.node3.gdzc.com(\w*)
+      urlSubstitutionExp: 127.0.0.1:12051
+      sslTargetOverrideUrlSubstitutionExp: peer1.node3.gdzc.com
+      mappedHost: peer1.node3.gdzc.com
+
+
+  orderer:
+    - pattern: (\w*)center.gdzc.com(\w*)
+      urlSubstitutionExp: 127.0.0.1:7050
+      sslTargetOverrideUrlSubstitutionExp: center.gdzc.com
+      mappedHost: center.gdzc.com

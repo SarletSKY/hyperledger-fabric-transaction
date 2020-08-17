@@ -1,0 +1,2 @@
+2020-08-04 15:08:28.236 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: rpc error: code = Unavailable desc = transport is closing

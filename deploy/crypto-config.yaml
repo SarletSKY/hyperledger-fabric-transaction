@@ -1,0 +1,40 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# ---------------------------------------------------------------------------
+# "OrdererOrgs" - Definition of organizations managing orderer nodes
+# ---------------------------------------------------------------------------
+OrdererOrgs:
+  - Name: Orderer
+    Domain: gdzc.com
+    Specs:
+      - Hostname: center
+# ---------------------------------------------------------------------------
+# "PeerOrgs" - Definition of organizations managing peer nodes
+# ---------------------------------------------------------------------------
+PeerOrgs:
+  # ---------------------------------------------------------------------------
+  # Org1
+  # ---------------------------------------------------------------------------
+  - Name: Org1
+    Domain: node1.gdzc.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: hello # implicitly "foo.org1.example.com"
+      - Hostname: word
+  - Name: Org2
+    Domain: node2.gdzc.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: zhao # implicitly "foo.org1.example.com"
+      - Hostname: weixiong
+
+  - Name: Org3
+    Domain: node3.gdzc.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1

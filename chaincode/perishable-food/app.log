@@ -1,0 +1,113 @@
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:488] 检查帐号
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:445] 查询到第1个帐号信息结果为: &{Id:1 UserName:admin1 Password:admin1 PayPassword:000001 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:采购商}
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:445] 查询到第1个帐号信息结果为: &{Id:2 UserName:admin2 Password:admin2 PayPassword:000002 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:供货商}
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:445] 查询到第1个帐号信息结果为: &{Id:3 UserName:admin3 Password:admin3 PayPassword:000003 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:金融机构}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:502] 检查商品
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:374] 查询到第1个商品信息结果为: &{User:0xc000178320 Id:88efd7ea-bec6-4994-8ed1-f3f7b6f8cac7 Name:国光 Origin:中国 Price:6 Introduce:国光这个商品属于2用户}
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:374] 查询到第1个商品信息结果为: &{User:0xc0001786e0 Id:36bf5c7f-4cf7-4926-b0f6-0c5c18515752 Name:红星 Origin:中国 Price:7 Introduce:红星这个商品属于2用户}
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:374] 查询到第1个商品信息结果为: &{User:0xc000178820 Id:d9ce807b-e308-11e8-a47c-3e1591a6f5bb Name:红富士 Origin:中国 Price:8 Introduce:红富士这个商品属于2用户}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:374] 查询到第1个商品信息结果为: &{User:0xc0001797c0 Id:2746eef4-7f44-4b65-a221-ca661fc0f1a2 Name:芭蕉 Origin:中国 Price:4 Introduce:商家创建商品～芭蕉}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:409] 查询到第1个订单信息结果为: &{Commodity:0xc0000fe550 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（待确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0000ff810 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（待确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0000ffae0 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（待确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0000ffdb0 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（待确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:222] 查询到帐号{Id:3 UserName:admin3 Password:admin3 PayPassword:000003 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:金融机构}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:471] 查询到订单状态信息结果为: &{Commodity:0xc000197540 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（已确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:286] 查询到第1个结果，金融机构列表结果为：{Id:3 UserName:admin3 Password:admin3 PayPassword:000003 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:金融机构}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001a64b0 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（待确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001a69b0 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（已确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:286] 查询到第1个结果，金融机构列表结果为：{Id:3 UserName:admin3 Password:admin3 PayPassword:000003 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:金融机构}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:471] 查询到订单状态信息结果为: &{Commodity:0xc0001a6ff0 Id:001 PayOrderNo: Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:申请代付 OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:254] userId为[2]查询到1个结果，申请代付栏/审批订单栏结果为：{Commodity:0xc0001a7ae0 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（已确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:286] 查询到第1个结果，金融机构列表结果为：{Id:3 UserName:admin3 Password:admin3 PayPassword:000003 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:金融机构}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:254] userId为[1]查询到1个结果，申请代付栏/审批订单栏结果为：{Commodity:0xc0001ba280 Id:001 PayOrderNo: Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:申请代付 OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:254] userId为[3]查询到1个结果，申请代付栏/审批订单栏结果为：{Commodity:0xc0001ba500 Id:001 PayOrderNo: Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:申请代付 OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:286] 查询到第1个结果，金融机构列表结果为：{Id:3 UserName:admin3 Password:admin3 PayPassword:000003 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:金融机构}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:471] 查询到订单状态信息结果为: &{Commodity:0xc0001bb9a0 Id:001 PayOrderNo:bb03733dd26631a0471a897fd934e1474698f7817f41fd29ba31e5d5fd154119 Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:已付款（已核实） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:286] 查询到第1个结果，金融机构列表结果为：{Id:3 UserName:admin3 Password:admin3 PayPassword:000003 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:金融机构}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001cad20 Id:001 PayOrderNo:5e1c3bd411bf606a83537d51ba728b91aa7e4f0e8121ccbb6404074f8a6798bd Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:已付款（未核实) OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:286] 查询到第1个结果，金融机构列表结果为：{Id:3 UserName:admin3 Password:admin3 PayPassword:000003 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:金融机构}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:319] 查询到已完成的订单第1个结果为{Commodity:0xc0001e2320 Id:001 PayOrderNo:1abb19b7f3a6215172a5d6bc0a39c5b1a05ced61923a0f5e8f72b7d724ca19fa Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:已发货（已核实） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001e2c30 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（待确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001e3130 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（已确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:286] 查询到第1个结果，金融机构列表结果为：{Id:3 UserName:admin3 Password:admin3 PayPassword:000003 Phone:13790822374 Email:10086@qq.com Enterprise:广东泽诚有限公司 EnterpriseOrigin:广州 EnterpriseCredit:100 Balance:1000 Role:金融机构}
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001e3900 Id:001 PayOrderNo: Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:申请代付 OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001e3ef0 Id:001 PayOrderNo:788f0c5d77fe6648003f457c9745dd5a2d30633b8171e19445ea012fcafcf531 Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:已付款（未核实) OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001f44b0 Id:001 PayOrderNo:788f0c5d77fe6648003f457c9745dd5a2d30633b8171e19445ea012fcafcf531 Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:已付款（已核实） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001f4a50 Id:001 PayOrderNo:788f0c5d77fe6648003f457c9745dd5a2d30633b8171e19445ea012fcafcf531 Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:已发货（未核实） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001f4ff0 Id:001 PayOrderNo:788f0c5d77fe6648003f457c9745dd5a2d30633b8171e19445ea012fcafcf531 Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:已发货（已核实） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:182] [全部]查询到的订单第1个结果为{Commodity:0xc0001f5590 Id:001 PayOrderNo:788f0c5d77fe6648003f457c9745dd5a2d30633b8171e19445ea012fcafcf531 Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:已还款（未核实） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:10:34 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:10:34 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:319] 查询到已完成的订单第1个结果为{Commodity:0xc0001f5ae0 Id:001 PayOrderNo:788f0c5d77fe6648003f457c9745dd5a2d30633b8171e19445ea012fcafcf531 Buyer:1 FinancialInstitution:3 Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:已还款（已核实） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}
+
+2020-08-14 17:11:22 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:325] 初始化链码
+2020-08-14 17:11:22 [DEBG] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:335] 开始调用invoke函数
+2020-08-14 17:11:22 [INFO] [accurchain.com/perishable-food/chaincode/perishable-food/chaincode_test.go:409] 查询到第1个订单信息结果为: &{Commodity:0xc0000e0f50 Id:001 PayOrderNo: Buyer:1 FinancialInstitution: Seller:2 Quantity:5 OrderTotalAmount:30 DeliverAddress:广州市 Status:新建（待确认） OrderTime:2018-12-02 18:00:00 +0800 CST DeliverTime:2018-12-04 18:00:00 +0800 CST}

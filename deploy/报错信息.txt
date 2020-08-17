@@ -1,0 +1,16 @@
+Error: rpc error: code = Unavailable desc = transport is closing
+解决：https://blog.csdn.net/I_master_GYY/article/details/94554311
+原因：创建通道没有tls配置
+Error: could not send: EOF
+原因：实例化没有tls配置
+Error: error getting endorser client for invoke: endorser client failed to connect to zhao.node2.gdzc.com: failed to create new connection: context deadline exceeded
+链码调用：还是一样tls配置没有设置好
+
+问题：invoke失败，在日志中出现下面这个错误
+日志：INFO 031 Channel [transaction]: Chaincode [Name=food, Version=1.0.0, Hash=[]byte{0x52, 0xab, 0x5c, 0x89, 0x3, 0x3, 0x41, 0x9d, 0x1, 0xe8, 0x8d, 0x63, 0xc2, 0xd9, 0x34, 0x48, 0x86, 0x54, 0x1f, 0x1d, 0x5d, 0x17, 0xa2, 0x5, 0xa6, 0xf9, 0x21, 0x8c, 0x6b, 0x46, 0x8c, 0x6a}] is not installed hence no need to create chaincode artifacts for endorsement
+原因：就是可能安装链码版本不对应
+
+web端错误：
+错误：error registering for TxStatus event: could not create client conn: could not connect to hello.node1.gdzc.com:7051: dialing connection timed out [hello.node1.gdzc.com:7051]
+第一：有可能是因为使用tls，但是却没有在web端的config.yaml进行使用，去启动这个配置。需要将config.yaml的allow-insecure变量设置成false，且tlsCACerts.path设置tls的路径
+第二：如果tls没有错误，则因为设置背书策略，但却在config.yaml没有使用entityMatchers这个配置信息，设置即可[之前不需要，可能因为版本的原因需要了。]
