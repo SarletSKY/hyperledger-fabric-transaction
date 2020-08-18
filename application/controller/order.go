@@ -230,3 +230,31 @@ func QueryOrderCompletionList(ctx *gin.Context) {
 	// 将结果返回
 	ctx.JSON(http.StatusOK, data)
 }
+
+// 查询采购商的历史订单
+func QueryBuyerHistoricalTransactions(ctx *gin.Context) {
+
+	req := new(orderRequest)
+
+	if err := ctx.ShouldBind(req); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	resp, err := blockchain.ChannelQuery("queryBuyerHistoricalTransactions", [][]byte{
+		[]byte(req.Id),
+		[]byte(req.Status),
+	})
+
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	// 反序列化json
+	var data []map[string]interface{}
+	json.Unmarshal(bytes.NewBuffer(resp.Payload).Bytes(), &data)
+
+	// 将结果返回
+	ctx.JSON(http.StatusOK, data)
+}
