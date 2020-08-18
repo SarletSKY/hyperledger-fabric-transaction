@@ -213,9 +213,22 @@ func (t *SmartContract) createCommodity(stub shim.ChaincodeStubInterface, args [
 		return resp
 	}
 
-	// 判断该帐号是否为供货商，不是不同意创建
+	// 判断该帐号是否为供货商，不是不同意创建 TODO:后期可以删除
 	if user.Role != enumRoles.Seller {
 		return peer.Response{Status: 500, Message: "无法创建商品", Payload: nil}
+	}
+
+	// 创建主键
+	var key string
+	if val, err := stub.CreateCompositeKey("commodity", []string{id}); err != nil {
+		return peer.Response{Status: 500, Message: fmt.Sprintf("create key error %s", err), Payload: nil}
+	} else {
+		key = val
+	}
+
+	// 判断有没有该商品
+	if commodityBytes, err := stub.GetState(key); err == nil && len(commodityBytes) != 0 {
+		return peer.Response{Status: 500, Message: "commodity already exist", Payload: nil}
 	}
 
 	// 数据格式转换
@@ -234,19 +247,6 @@ func (t *SmartContract) createCommodity(stub shim.ChaincodeStubInterface, args [
 		Origin:    origin,
 		Price:     formattedPrice,
 		Introduce: introduce,
-	}
-
-	// 创建主键
-	var key string
-	if val, err := stub.CreateCompositeKey("commodity", []string{id}); err != nil {
-		return peer.Response{Status: 500, Message: fmt.Sprintf("create key error %s", err), Payload: nil}
-	} else {
-		key = val
-	}
-
-	// 判断有没有该商品
-	if commodityBytes, err := stub.GetState(key); err == nil && len(commodityBytes) != 0 {
-		return peer.Response{Status: 500, Message: "commodity already exist", Payload: nil}
 	}
 
 	// 序列化
@@ -421,38 +421,10 @@ func (t *SmartContract) queryOrderList(stub shim.ChaincodeStubInterface, args []
 		return resp
 	}
 
-	// role主要为了区分显示全部订单列表
-	orderResult, err := stub.GetStateByPartialCompositeKey("order", keys)
-	if err != nil {
-		return peer.Response{Status: 500, Message: fmt.Sprintf("query order error: %s", err), Payload: nil}
-	}
-	defer orderResult.Close()
-
 	orderList := make([]*Order, 0)
-	for orderResult.HasNext() {
-		val, err := orderResult.Next()
-		if err != nil {
-			return peer.Response{Status: 500, Message: fmt.Sprintf("Get order error %s", err), Payload: nil}
-		}
-
-		order := new(Order)
-		if err := json.Unmarshal(val.GetValue(), order); err != nil {
-			return peer.Response{Status: 500, Message: fmt.Sprintf("Order failed to convert from bytes, error %s", err), Payload: nil}
-		}
-
-		// 是否存在某帐号
-		if !IsExistItem(user.Id, []string{order.Buyer, order.Seller, order.FinancialInstitution}) {
-			continue
-		}
-
-		// 判断状态，区分下供货商。 如果帐号为供货商
-		if user.Role == enumRoles.Seller {
-			// 如果该订单的状态为已还款状态，则改成已发货状态返回给前端
-			if IsExistItem(order.Status, QueryOrderBySeller) {
-				order.Status = enumStatus.DeliveredVerified
-			}
-		}
-		orderList = append(orderList, order)
+	resp, orderList = getSpecifyStatusOrder(stub, keys, []string{""}, user.Id)
+	if resp.Status != int32(shim.OK) {
+		return resp
 	}
 
 	// 序列化返回
@@ -995,19 +967,12 @@ func (t *SmartContract) queryOrderCompletionList(stub shim.ChaincodeStubInterfac
 		return resp
 	}
 
-	// 获取所有订单
-	orderResult, err := stub.GetStateByPartialCompositeKey("order", keys)
-	if err != nil {
-		return peer.Response{Status: 500, Message: fmt.Sprintf("query order error: %s", err), Payload: nil}
-	}
-	defer orderResult.Close()
-
 	orderList := make([]*Order, 0)
 	// 1. 先进行判断什么角色区分帐号的角色显示分支
 	if user.Role == enumRoles.Seller {
-		resp, orderList = getSpecifyStatusOrder(orderResult, SellerFinishOrder, userId) //  发货
+		resp, orderList = getSpecifyStatusOrder(stub, keys, SellerFinishOrder, userId) //  发货
 	} else {
-		resp, orderList = getSpecifyStatusOrder(orderResult, []string{enumStatus.RefundVerified}, userId) // 还款
+		resp, orderList = getSpecifyStatusOrder(stub, keys, []string{enumStatus.RefundVerified}, userId) // 还款
 	}
 
 	if resp.Status != int32(shim.OK) {
@@ -1053,28 +1018,18 @@ func (t *SmartContract) queryBuyerHistoricalTransactions(stub shim.ChaincodeStub
 	}
 
 	keys := make([]string, 0)
-	orderResult, err := stub.GetStateByPartialCompositeKey("order", keys)
-	if err != nil {
-		return peer.Response{Status: 500, Message: fmt.Sprintf("query order error: %s", err), Payload: nil}
-	}
-	defer orderResult.Close()
-
 	orderList := make([]*Order, 0)
-	var BuyerNoPayResp peer.Response
-	var BuyerPayResp peer.Response
 	// 获取指定用户的指定某些订单的状态
 	if IsExistItem(status, []string{enumStatus.DeliveredVerified}) {
-		BuyerNoPayResp, orderList = getSpecifyStatusOrder(orderResult, []string{status}, user.Id) // 待还款
-		if BuyerNoPayResp.Status != int32(shim.OK) {
-			return BuyerNoPayResp
-		}
+		resp, orderList = getSpecifyStatusOrder(stub, keys, []string{status}, user.Id) // 待还款
 	} else if IsExistItem(status, []string{enumStatus.RefundVerified, enumStatus.RefundNoVerified}) {
-		BuyerPayResp, orderList = getSpecifyStatusOrder(orderResult, []string{status}, user.Id) // 待还款
-		if BuyerPayResp.Status != int32(shim.OK) {
-			return BuyerPayResp
-		}
+		resp, orderList = getSpecifyStatusOrder(stub, keys, []string{status}, user.Id) // 待还款
 	} else {
 		return peer.Response{Status: 500, Message: "状态不正确", Payload: nil}
+	}
+
+	if resp.Status != int32(shim.OK) {
+		return resp
 	}
 
 	// 序列化返回
@@ -1091,7 +1046,14 @@ func (t *SmartContract) queryBuyerHistoricalTransactions(stub shim.ChaincodeStub
 }
 
 // 获取指定状态订单 // TODO: 其实后续可以升级传入多个状态，进行筛选，弄成列表slice或者map，有底层源码进行查找
-func getSpecifyStatusOrder(orderResult shim.StateQueryIteratorInterface, status []string, roleId string) (peer.Response, []*Order) {
+func getSpecifyStatusOrder(stub shim.ChaincodeStubInterface, keys []string, status []string, roleId string) (peer.Response, []*Order) {
+	// role主要为了区分显示全部订单列表
+	orderResult, err := stub.GetStateByPartialCompositeKey("order", keys)
+	if err != nil {
+		return peer.Response{Status: 500, Message: fmt.Sprintf("query order error: %s", err), Payload: nil}, nil
+	}
+	defer orderResult.Close()
+
 	orderList := make([]*Order, 0)
 	for orderResult.HasNext() {
 		val, err := orderResult.Next()
@@ -1112,14 +1074,19 @@ func getSpecifyStatusOrder(orderResult shim.StateQueryIteratorInterface, status 
 			}
 		}
 
-		// 2. 判断该订单是否是指定的状态为范围内
-		if !IsExistItem(order.Status, status) {
-			continue
-		}
-
 		// 3. 判断什么角色进行处理例外的供货商显示(就是处理已发货的显示问题)
 		if roleId == order.Seller && IsExistItem(order.Status, SellerFinishOrder) {
 			order.Status = enumStatus.DeliveredVerified
+		}
+
+		// 4. 如果传入的status是空, 则说明要返回某帐号的所有订单
+		if IsExistItem("", status) {
+			orderList = append(orderList, order)
+		}
+
+		// 2. 判断该订单是否是指定的状态为范围内
+		if !IsExistItem(order.Status, status) {
+			continue
 		}
 
 		orderList = append(orderList, order)
