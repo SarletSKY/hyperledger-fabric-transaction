@@ -19,10 +19,11 @@ type SmartContract struct{}
 var (
 	enumStatus                       = newStatus()
 	enumRoles                        = newRoles()
-	ApprovalOrdersColumnByFiAndBuyer = []string{enumStatus.ToApplyForPaid, enumStatus.UnPayment, enumStatus.PaymentNoVerified} //审批订单[采购商]
-	ApprovalOrdersColumnBySeller     = []string{enumStatus.NewConfirmed, enumStatus.NewUnconfirmed}                            // 审批订单[供货商/金融机构]
-	QueryOrderBySeller               = []string{enumStatus.RefundVerified, enumStatus.RefundNoVerified}                        // 查询全部订单
-	UpdateStatusRangeList            = []string{                                                                               // 更新状态
+	ApprovalOrdersColumnByFiAndBuyer = []string{enumStatus.ToApplyForPaid, enumStatus.UnPayment, enumStatus.PaymentNoVerified}        //审批订单[采购商]
+	ApprovalOrdersColumnBySeller     = []string{enumStatus.NewConfirmed, enumStatus.NewUnconfirmed}                                   // 审批订单[供货商/金融机构]
+	QueryOrderBySeller               = []string{enumStatus.RefundVerified, enumStatus.RefundNoVerified}                               // 查询全部订单
+	SellerFinishOrder                = []string{enumStatus.DeliveredVerified, enumStatus.RefundVerified, enumStatus.RefundNoVerified} // 供货商已完成订单状态
+	UpdateStatusRangeList            = []string{                                                                                      // 更新状态
 		enumStatus.PaymentVerified,
 		enumStatus.DeliveredNoVerified,
 		enumStatus.DeliveredVerified,
@@ -597,8 +598,9 @@ func (t *SmartContract) financialApproval(stub shim.ChaincodeStubInterface, args
 			return peer.Response{Status: 500, Message: "支付密码输入不正确", Payload: nil}
 		}
 		// 生成付款单号 = 时间戳+订单id+金融帐号 [sha256加密]
-		//PayOrderNo := Sha256([]byte(fmt.Sprintf("%x", time.Now().Nanosecond()) + orderId + user.UserName))
-		order.PayOrderNo = "0001"
+		now := time.Now().Format(timeLayout)
+		PayOrderNo := Sha256([]byte(now + orderId + user.UserName))
+		order.PayOrderNo = PayOrderNo
 		order.Status = enumStatus.PaymentNoVerified
 		order.PromiseRepaymentTime = formattedPromiseRepaymentTime
 	} else {
@@ -926,6 +928,13 @@ func (t *SmartContract) updateOrderStatus(stub shim.ChaincodeStubInterface, args
 	orderId := args[0]
 	status := args[1]
 
+	var formattedCurTime time.Time
+	if val, err := time.Parse(timeLayout, time.Now().Format(timeLayout)); err != nil {
+		return peer.Response{Status: 500, Message: "format curTime error", Payload: nil}
+	} else {
+		formattedCurTime = val
+	}
+
 	// 值允许这些状态修改，当然前端会自己判断，这里只是方面测试
 	// 利用反射判断数组中有没有改状态
 	if !IsExistItem(status, UpdateStatusRangeList) {
@@ -943,7 +952,7 @@ func (t *SmartContract) updateOrderStatus(stub shim.ChaincodeStubInterface, args
 	order.Status = status
 	// 如果是用户点击确认收货，将订单的还款时间输入
 	if order.Status == enumStatus.RefundNoVerified {
-		order.RepaymentTime = time.Now()
+		order.RepaymentTime = formattedCurTime
 	}
 
 	var key string
@@ -994,11 +1003,11 @@ func (t *SmartContract) queryOrderCompletionList(stub shim.ChaincodeStubInterfac
 	defer orderResult.Close()
 
 	orderList := make([]*Order, 0)
-	// 如果是供货商
+	// 1. 先进行判断什么角色区分帐号的角色显示分支
 	if user.Role == enumRoles.Seller {
-		resp, orderList = getSpecifyStatusOrder(orderResult, enumStatus.DeliveredVerified, userId) //  发货
+		resp, orderList = getSpecifyStatusOrder(orderResult, SellerFinishOrder, userId) //  发货
 	} else {
-		resp, orderList = getSpecifyStatusOrder(orderResult, enumStatus.RefundVerified, userId) // 还款
+		resp, orderList = getSpecifyStatusOrder(orderResult, []string{enumStatus.RefundVerified}, userId) // 还款
 	}
 
 	if resp.Status != int32(shim.OK) {
@@ -1055,12 +1064,12 @@ func (t *SmartContract) queryBuyerHistoricalTransactions(stub shim.ChaincodeStub
 	var BuyerPayResp peer.Response
 	// 获取指定用户的指定某些订单的状态
 	if IsExistItem(status, []string{enumStatus.DeliveredVerified}) {
-		BuyerNoPayResp, orderList = getSpecifyStatusOrder(orderResult, status, user.Id) // 待还款
+		BuyerNoPayResp, orderList = getSpecifyStatusOrder(orderResult, []string{status}, user.Id) // 待还款
 		if BuyerNoPayResp.Status != int32(shim.OK) {
 			return BuyerNoPayResp
 		}
 	} else if IsExistItem(status, []string{enumStatus.RefundVerified, enumStatus.RefundNoVerified}) {
-		BuyerPayResp, orderList = getSpecifyStatusOrder(orderResult, status, user.Id) // 待还款
+		BuyerPayResp, orderList = getSpecifyStatusOrder(orderResult, []string{status}, user.Id) // 待还款
 		if BuyerPayResp.Status != int32(shim.OK) {
 			return BuyerPayResp
 		}
@@ -1082,7 +1091,7 @@ func (t *SmartContract) queryBuyerHistoricalTransactions(stub shim.ChaincodeStub
 }
 
 // 获取指定状态订单 // TODO: 其实后续可以升级传入多个状态，进行筛选，弄成列表slice或者map，有底层源码进行查找
-func getSpecifyStatusOrder(orderResult shim.StateQueryIteratorInterface, status string, roleId string) (peer.Response, []*Order) {
+func getSpecifyStatusOrder(orderResult shim.StateQueryIteratorInterface, status []string, roleId string) (peer.Response, []*Order) {
 	orderList := make([]*Order, 0)
 	for orderResult.HasNext() {
 		val, err := orderResult.Next()
@@ -1094,17 +1103,25 @@ func getSpecifyStatusOrder(orderResult shim.StateQueryIteratorInterface, status 
 		if err := json.Unmarshal(val.GetValue(), order); err != nil {
 			return peer.Response{Status: 500, Message: fmt.Sprintf("Order failed to convert from bytes, error %s", err), Payload: nil}, orderList
 		}
+
 		// 如果为空，则只是单纯查指定某状态全部订单
 		if roleId != "" {
-			// 是否存在某帐号
+			// 1.判断该订单是否是属于该帐号应该显示的订单
 			if !IsExistItem(roleId, []string{order.Buyer, order.Seller, order.FinancialInstitution}) {
 				continue
 			}
 		}
-		// 当订单状态为已还款(已确认)
-		if order.Status != status {
+
+		// 2. 判断该订单是否是指定的状态为范围内
+		if !IsExistItem(order.Status, status) {
 			continue
 		}
+
+		// 3. 判断什么角色进行处理例外的供货商显示(就是处理已发货的显示问题)
+		if roleId == order.Seller && IsExistItem(order.Status, SellerFinishOrder) {
+			order.Status = enumStatus.DeliveredVerified
+		}
+
 		orderList = append(orderList, order)
 	}
 	return peer.Response{Status: 200, Message: "success message", Payload: nil}, orderList
