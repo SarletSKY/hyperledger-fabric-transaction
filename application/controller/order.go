@@ -113,7 +113,6 @@ func FinancialApproval(ctx *gin.Context) {
 		[]byte(req.User),
 		[]byte(req.Status),
 		[]byte(req.PayPassword),
-		[]byte(time.Now().Format(timeLayout)),
 	})
 
 	if err != nil {

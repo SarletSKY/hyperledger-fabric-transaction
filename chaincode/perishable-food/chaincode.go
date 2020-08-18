@@ -21,7 +21,6 @@ var (
 	enumRoles                        = newRoles()
 	ApprovalOrdersColumnByFiAndBuyer = []string{enumStatus.ToApplyForPaid, enumStatus.UnPayment, enumStatus.PaymentNoVerified}        //审批订单[采购商]
 	ApprovalOrdersColumnBySeller     = []string{enumStatus.NewConfirmed, enumStatus.NewUnconfirmed}                                   // 审批订单[供货商/金融机构]
-	QueryOrderBySeller               = []string{enumStatus.RefundVerified, enumStatus.RefundNoVerified}                               // 查询全部订单
 	SellerFinishOrder                = []string{enumStatus.DeliveredVerified, enumStatus.RefundVerified, enumStatus.RefundNoVerified} // 供货商已完成订单状态
 	UpdateStatusRangeList            = []string{                                                                                      // 更新状态
 		enumStatus.PaymentVerified,
@@ -524,7 +523,7 @@ func (t *SmartContract) confirmOrder(stub shim.ChaincodeStubInterface, args []st
 
 // [金融机构]审核订单栏[审核订单] ✔
 func (t *SmartContract) financialApproval(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 5 {
+	if len(args) != 4 {
 		return peer.Response{Status: 5001, Message: "输入的参数个数不正确", Payload: nil}
 	}
 
@@ -532,18 +531,9 @@ func (t *SmartContract) financialApproval(stub shim.ChaincodeStubInterface, args
 	userId := args[1]
 	status := args[2]
 	payPwd := args[3]
-	promiseRepaymentTime := args[4]
 
-	if orderId == "" || status == "" || payPwd == "" || userId == "" || promiseRepaymentTime == "" {
+	if orderId == "" || status == "" || payPwd == "" || userId == "" {
 		return peer.Response{Status: 5002, Message: "参数不能为空", Payload: nil}
-	}
-
-	// 数据格式转换
-	var formattedPromiseRepaymentTime time.Time
-	if val, err := time.Parse(timeLayout, promiseRepaymentTime); err != nil {
-		return peer.Response{Status: 500, Message: "format formattedPromiseRepaymentTime error", Payload: nil}
-	} else {
-		formattedPromiseRepaymentTime = val
 	}
 
 	// 获取单个订单
@@ -574,7 +564,6 @@ func (t *SmartContract) financialApproval(stub shim.ChaincodeStubInterface, args
 		PayOrderNo := Sha256([]byte(now + orderId + user.UserName))
 		order.PayOrderNo = PayOrderNo
 		order.Status = enumStatus.PaymentNoVerified
-		order.PromiseRepaymentTime = formattedPromiseRepaymentTime
 	} else {
 		return peer.Response{Status: 500, Message: "状态不正确", Payload: nil}
 	}
@@ -652,46 +641,20 @@ func (t *SmartContract) queryApprovalOrder(stub shim.ChaincodeStubInterface, arg
 	}
 
 	var keys []string
-	// 获取全部订单信息
-	orderResult, err := stub.GetStateByPartialCompositeKey("order", keys)
-	if err != nil {
-		return peer.Response{Status: 500, Message: fmt.Sprintf("query order error: %s", err), Payload: nil}
-	}
-	defer orderResult.Close()
-
-	// [供货商/金融机构]列表
-	sellerOrderList := make([]*Order, 0)
-	fiAndBuyerOrderList := make([]*Order, 0)
-	for orderResult.HasNext() {
-		val, err := orderResult.Next()
-		if err != nil {
-			return peer.Response{Status: 500, Message: fmt.Sprintf("Get order error %s", err), Payload: nil}
-		}
-
-		order := new(Order)
-		if err := json.Unmarshal(val.GetValue(), order); err != nil {
-			return peer.Response{Status: 500, Message: fmt.Sprintf("Order failed to convert from bytes, error %s", err), Payload: nil}
-		}
-
-		// 如果根改帐号无关的不进行显示在页面[过滤]
-		if !IsExistItem(user.Id, []string{order.Buyer, order.Seller, order.FinancialInstitution}) {
-			continue
-		}
-
-		// 只选择对应的状态
-		if IsExistItem(order.Status, ApprovalOrdersColumnBySeller) { // 供货商审批栏两个状态，因为新建已确认之后，还要采购商点击确认订单状态才会改变成申请审批
-			sellerOrderList = append(sellerOrderList, order)
-		} else if IsExistItem(order.Status, ApprovalOrdersColumnByFiAndBuyer) {
-			fiAndBuyerOrderList = append(fiAndBuyerOrderList, order)
-		}
-	}
-
 	var orderBytes []byte
+	var resp peer.Response
+	orderList := make([]*Order, 0)
 	// 判断用户的角色是[供货商/金融机构/]
 	if user.Role == enumRoles.Seller {
-		orderBytes, _ = json.Marshal(sellerOrderList)
+		resp, orderList = getSpecifyStatusOrder(stub, keys, ApprovalOrdersColumnBySeller, user.Id)
+		orderBytes, _ = json.Marshal(orderList)
 	} else if user.Role == enumRoles.FinancialInstitution || user.Role == enumRoles.Buyer {
-		orderBytes, _ = json.Marshal(fiAndBuyerOrderList)
+		resp, orderList = getSpecifyStatusOrder(stub, keys, ApprovalOrdersColumnByFiAndBuyer, user.Id)
+		orderBytes, _ = json.Marshal(orderList)
+	}
+
+	if resp.Status != int32(shim.OK) {
+		return resp
 	}
 	// 返回数据
 	return peer.Response{
@@ -813,6 +776,7 @@ func (t *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []stri
 		return peer.Response{Status: 5001, Message: "输入的参数个数不正确", Payload: nil}
 	}
 
+	// TODO: username要唯一
 	id := args[0]
 	username := args[1]
 	password := args[2]
@@ -922,6 +886,11 @@ func (t *SmartContract) updateOrderStatus(stub shim.ChaincodeStubInterface, args
 		return resp
 	}
 	order.Status = status
+	// 如果已发货(未核实)，承诺时间
+	if order.Status == enumStatus.DeliveredNoVerified {
+		order.PromiseRepaymentTime = formattedCurTime
+	}
+
 	// 如果是用户点击确认收货，将订单的还款时间输入
 	if order.Status == enumStatus.RefundNoVerified {
 		order.RepaymentTime = formattedCurTime
@@ -1045,7 +1014,7 @@ func (t *SmartContract) queryBuyerHistoricalTransactions(stub shim.ChaincodeStub
 	}
 }
 
-// 获取指定状态订单 // TODO: 其实后续可以升级传入多个状态，进行筛选，弄成列表slice或者map，有底层源码进行查找
+// 获取指定状态订单
 func getSpecifyStatusOrder(stub shim.ChaincodeStubInterface, keys []string, status []string, roleId string) (peer.Response, []*Order) {
 	// role主要为了区分显示全部订单列表
 	orderResult, err := stub.GetStateByPartialCompositeKey("order", keys)
